@@ -8,7 +8,7 @@ It is a cross platform (Windows, Linux/Unix or Mac OS) provided a Java Runtime (
 # Usage
 
 ```
-java -jar shsqlserver-<version>.jar --spring.datasource.url=<sqlserver jdbc url> --spring.datasource.username=<sqlserver login/username> - spring.datasource.password=<sqlserver password>
+java -jar shqlserver-<version>.jar --spring.datasource.url=<sqlserver jdbc url> --spring.datasource.username=<sqlserver login/username> - spring.datasource.password=<sqlserver password>
 ```
 
 Once run, it will prompt for sql commands as follows
@@ -21,7 +21,7 @@ $> sql
 *shqlserver* uses *com.microsoft:sqlserver-driver:4.0.2206* driver (that provides the *com.microsoft.sqlserver.jdbc.SQLServerDriver* driver class). To use another driver/driver-class, use the parameter *spring.datasource.driver-class-name* (prodiving the driver in the class path of the application) as follows:
 
 ```sh
-java -jar shsqlserver-<version>.jar ... --spring.datasource.driver-class-name=<your driver class> -cp <path to the j-driver>
+java -jar shqlserver-<version>.jar ... --spring.datasource.driver-class-name=<your driver class> -cp <path to the j-driver>
 ```
 
 # Commands and Getting help
