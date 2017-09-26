@@ -50,7 +50,7 @@ $>sql USE my_schema; SELECT top 10 * FROM my_table ORDER BY id DESC
 $>sql USE my_schema; EXEC myprocedure <list of paramters if any>
 ```
 
-* _Describe_ the structure (column name, type, length, ... etc) of myschema..mytable
+* _Describe_ the structure (column name, type, length, ... etc) of _myschema..mytable_
 ```sh
 $>sql describe my_schema..mytable;
 ```
