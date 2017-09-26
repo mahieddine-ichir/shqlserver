@@ -28,7 +28,7 @@ java -jar shsqlserver-<version>.jar ... --spring.datasource.driver-class-name=<y
 All valid SQL Server requests are accepted (including stored procedures). Invalid SQL Server syntaxed requests will result in a Java Stack Trace from the SQL Server Java driver.
 
 ## Extended commands
-Some (sql - mysql like) commands are however supported for ease. To get the list of *available extended* sql commands, type :
+Some (sql - mysql like) commands are however supported for ease. To get the list of *available extended* sql commands, type
 
 ```sh
 $>sql help
