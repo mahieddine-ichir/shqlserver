@@ -16,9 +16,7 @@ public class Application {
 		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
 		Map<String, Executor> executors = context.getBeansOfType(Executor.class);
-
 		QueryRunner runner = context.getBean(QueryRunner.class);
-		Use use = context.getBean(Use.class);
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -31,7 +29,6 @@ public class Application {
 
 		while (true) {
 			scanner = new Scanner(System.in);
-			use.onStart(); // FIXME remove using a start event
 
 			String sql = scanner.nextLine().trim();
 			if (sql.isEmpty()) {

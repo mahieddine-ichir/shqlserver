@@ -6,7 +6,9 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,10 +26,6 @@ public class Use implements Executor {
 	void init() {
 		pattern = Pattern.compile(patternString);
 	}
-
-	public void onStart() {
-		System.out.print("sql [master]> ");
-	}
 	
 	@Override
 	public void run(String cmd) {
@@ -43,5 +41,10 @@ public class Use implements Executor {
 	@Override
 	public Boolean supported(String command) {
 		return command.toLowerCase().matches(patternString);
+	}
+
+	@EventListener
+	public void onApplicationEvent(ApplicationReadyEvent event) {
+		System.out.print("sql [master]> ");
 	}
 }
