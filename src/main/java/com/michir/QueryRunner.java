@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class QueryRunner implements Executor {
+public class QueryRunner {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -22,8 +22,7 @@ public class QueryRunner implements Executor {
 
 	private String context = "";
 	
-	@Override
-	public void run(String sql) throws Exception {
+	public void execute(String sql) throws Exception {
 		if (!context.isEmpty()) {
 			sql = String.format("use %s;", context)+sql;
 		}
@@ -44,11 +43,6 @@ public class QueryRunner implements Executor {
 		publisher.publishEvent(new QueryEvent(sql));
 	}
 
-	@Override
-	public final Boolean supported(String command) {
-		return false;
-	}
-	
 	@EventListener
 	public void onSqlContextChanged(SqlContextChangedEvent event) {
 		this.context = event.getContext();

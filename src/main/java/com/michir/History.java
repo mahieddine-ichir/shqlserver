@@ -37,7 +37,7 @@ public class History implements Executor {
 			Matcher matcher = pattern.matcher(cmd);
 			if (matcher.find()) {
 				String sql = history.get(Integer.parseInt(matcher.group(1)));
-				commandRunner.run(sql);
+				commandRunner.execute(sql);
 			}
 			
 		} else {

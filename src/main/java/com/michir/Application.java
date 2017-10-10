@@ -1,7 +1,7 @@
 package com.michir;
 
+import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,10 +15,10 @@ public class Application {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
-		Stream<Executor> executors = context.getBeansOfType(Executor.class).values().stream();
+		Map<String, Executor> executors = context.getBeansOfType(Executor.class);
 
-		Stream<Executor> queryRunner = Stream.of(context.getBean(QueryRunner.class));
-		Stream<Use> use = Stream.of(context.getBean(Use.class));
+		QueryRunner runner = context.getBean(QueryRunner.class);
+		Use use = context.getBean(Use.class);
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -26,32 +26,33 @@ public class Application {
 				if (scanner != null) {
 					scanner.close();
 				}
-				queryRunner.close();
 			}
 		});
 
 		while (true) {
 			scanner = new Scanner(System.in);
-			use.forEach(e -> e.onStart());
+			use.onStart(); // FIXME remove using a start event
 
 			String sql = scanner.nextLine().trim();
 			if (sql.isEmpty()) {
 				continue;
 			}
 
-			Stream<Executor> execs;
-			if (executors.anyMatch(e -> e.supported(sql))) {
-				execs = executors.filter(e -> e.supported(sql));
+			if (executors.values().stream().anyMatch(e -> e.supported(sql))) {
+				executors.values().forEach(e -> {
+					try {
+						e.run(sql);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				});
 			} else {
-				execs = queryRunner;
-			}
-			execs.forEach(e -> {
 				try {
-					e.run(sql);
+					runner.execute(sql);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-			});
+			}
 		}
 	}
 }

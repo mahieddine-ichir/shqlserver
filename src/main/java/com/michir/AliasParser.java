@@ -48,7 +48,7 @@ public class AliasParser implements Executor {
 
 	@Override
 	public void run(String sql) throws Exception {
-		this.commandRunner.run(parse(sql));
+		this.commandRunner.execute(parse(sql));
 	}
 	
 }
