@@ -1,9 +1,9 @@
 package com.michir;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,41 +12,48 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class Application {
 
+	private static final Log LOG = LogFactory.getLog(Application.class);
+
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
-		List<String> history = new ArrayList<>();
-		
-		SQLCommandRunner runner = context.getBean(SQLCommandRunner.class);
-		SQLCommandsHelper helper = context.getBean(SQLCommandsHelper.class);
-		SQLCommandAliasParser aliasParser = context.getBean(SQLCommandAliasParser.class);
+		Stream<Executor> executors = context.getBeansOfType(Executor.class).values().stream();
+
+		// to capture User inputs
+		Scanner scanner = new Scanner(System.in);
+		// to execute 
+		Stream<Executor> queryRunner = Stream.of(context.getBean(QueryRunner.class));
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				scanner.close();
+				queryRunner.close();
+			}
+		});
 
 		while (true) {
-			
-			Scanner scanner = new Scanner(System.in);
-			System.out.print("sql> ");
-			String sql = scanner.nextLine();
 
-			LogFactory.getLog(Application.class).debug("Executing "+sql);
-			
-			if (sql.equals("exit")) {
-				scanner.close();
-				System.exit(0);
+			String sql = scanner.nextLine().trim();
+
+			LOG.debug("Executing "+sql);
+			if (sql.isEmpty()) {
+				continue;
 			}
-			
-			if (sql.equals("help")) {
-				helper.run();
+
+			Stream<Executor> execs;
+			if (executors.anyMatch(e -> e.supported(sql))) {
+				execs = executors.filter(e -> e.supported(sql));
 			} else {
-				if (aliasParser.contains(sql))
-					sql = aliasParser.parse(sql);
-				try {
-					runner.run(sql);
-					history.add(sql);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				execs = queryRunner;
 			}
-			
+			execs.forEach(e -> {
+				try {
+					e.run(sql);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			});
 		}
 	}
 }

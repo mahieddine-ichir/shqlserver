@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SQLCommandsHelper {
+public class Help implements Executor {
 
 	Map<String, String> map = new HashMap<>();
 	
@@ -18,10 +18,15 @@ public class SQLCommandsHelper {
 		map.put("describe table <schema>..<table>", "alias of <exec sp_columns>");
 	}
 	
-	public void run() {
-		
+	@Override
+	public void run(String sql) {
 		System.out.println("================");
 		map.forEach((k,v) -> System.out.println(String.format("\t%s \t%s", k, v)));
 		System.out.println("================");
+	}
+
+	@Override
+	public Boolean supported(String command) {
+		return command.equalsIgnoreCase("help") || command.equals("?");
 	}
 }

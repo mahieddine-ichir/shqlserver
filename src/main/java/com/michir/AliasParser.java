@@ -7,16 +7,20 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SQLCommandAliasParser {
+public class AliasParser implements Executor {
 
+	@Autowired
+	QueryRunner commandRunner;
+	
 	Map<String, String> map = new HashMap<>();
 	
 	@PostConstruct
 	void init() {
-		map.put("\\s*describe\\s+table\\s+(\\w+)\\.{2}(\\w+)\\s*;*\\s*", "use %s; exec sp_columns %s;");
+		map.put("describe\\s+table\\s+(\\w+)\\.{2}(\\w+)\\s*;*", "use %s; exec sp_columns %s;");
 	}
 	
 	boolean contains(String alias) {
@@ -37,8 +41,14 @@ public class SQLCommandAliasParser {
 		return null;
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("describe table MLV_SICL..request".matches("describe table (\\w+)\\.\\.(\\w+)"));
+	@Override
+	public Boolean supported(String command) {
+		return contains(command);
+	}
+
+	@Override
+	public void run(String sql) throws Exception {
+		this.commandRunner.run(parse(sql));
 	}
 	
 }
