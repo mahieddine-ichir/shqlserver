@@ -23,7 +23,7 @@ public class QueryRunner {
 	private String context = "";
 	
 	public void execute(String sql) throws Exception {
-		if (!context.isEmpty()) {
+		if (!context.isEmpty() && !sql.toLowerCase().startsWith("use ")) {
 			sql = String.format("use %s;", context)+sql;
 		}
 		List<Map<String,Object>> query = jdbcTemplate.query(sql, new ColumnMapRowMapper());
