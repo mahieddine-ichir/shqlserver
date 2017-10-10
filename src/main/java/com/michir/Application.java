@@ -17,6 +17,7 @@ public class Application {
 
 		Map<String, Executor> executors = context.getBeansOfType(Executor.class);
 		QueryRunner runner = context.getBean(QueryRunner.class);
+		Use use = context.getBean(Use.class);
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -29,6 +30,7 @@ public class Application {
 
 		while (true) {
 			scanner = new Scanner(System.in);
+			use.next();
 
 			String sql = scanner.nextLine().trim();
 			if (sql.isEmpty()) {
