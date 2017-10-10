@@ -3,8 +3,6 @@ package com.michir;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -12,31 +10,31 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class Application {
 
-	private static final Log LOG = LogFactory.getLog(Application.class);
+	static Scanner scanner = null;
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
 		Stream<Executor> executors = context.getBeansOfType(Executor.class).values().stream();
 
-		// to capture User inputs
-		Scanner scanner = new Scanner(System.in);
-		// to execute 
 		Stream<Executor> queryRunner = Stream.of(context.getBean(QueryRunner.class));
+		Stream<Use> use = Stream.of(context.getBean(Use.class));
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				scanner.close();
+				if (scanner != null) {
+					scanner.close();
+				}
 				queryRunner.close();
 			}
 		});
 
 		while (true) {
+			scanner = new Scanner(System.in);
+			use.forEach(e -> e.onStart());
 
 			String sql = scanner.nextLine().trim();
-
-			LOG.debug("Executing "+sql);
 			if (sql.isEmpty()) {
 				continue;
 			}
