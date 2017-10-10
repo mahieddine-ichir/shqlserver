@@ -39,7 +39,7 @@ public class Application {
 			}
 
 			if (executors.values().stream().anyMatch(e -> e.supported(sql))) {
-				executors.values().forEach(e -> {
+				executors.values().stream().filter(e -> e.supported(sql)).forEach(e -> {
 					try {
 						e.run(sql);
 					} catch (Exception e1) {
