@@ -1,10 +1,8 @@
 package com.michir;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
-import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -12,41 +10,48 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class Application {
 
+	static Scanner scanner = null;
+
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
-		List<String> history = new ArrayList<>();
-		
-		SQLCommandRunner runner = context.getBean(SQLCommandRunner.class);
-		SQLCommandsHelper helper = context.getBean(SQLCommandsHelper.class);
-		SQLCommandAliasParser aliasParser = context.getBean(SQLCommandAliasParser.class);
+		Map<String, Executor> executors = context.getBeansOfType(Executor.class);
+		QueryRunner runner = context.getBean(QueryRunner.class);
+		Use use = context.getBean(Use.class);
 
-		while (true) {
-			
-			Scanner scanner = new Scanner(System.in);
-			System.out.print("sql> ");
-			String sql = scanner.nextLine();
-
-			LogFactory.getLog(Application.class).debug("Executing "+sql);
-			
-			if (sql.equals("exit")) {
-				scanner.close();
-				System.exit(0);
-			}
-			
-			if (sql.equals("help")) {
-				helper.run();
-			} else {
-				if (aliasParser.contains(sql))
-					sql = aliasParser.parse(sql);
-				try {
-					runner.run(sql);
-					history.add(sql);
-				} catch (Exception e) {
-					e.printStackTrace();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				if (scanner != null) {
+					scanner.close();
 				}
 			}
-			
+		});
+
+		while (true) {
+			scanner = new Scanner(System.in);
+			use.next();
+
+			String sql = scanner.nextLine().trim();
+			if (sql.isEmpty()) {
+				continue;
+			}
+
+			if (executors.values().stream().anyMatch(e -> e.supported(sql))) {
+				executors.values().stream().filter(e -> e.supported(sql)).forEach(e -> {
+					try {
+						e.run(sql);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				});
+			} else {
+				try {
+					runner.execute(sql);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
 		}
 	}
 }
