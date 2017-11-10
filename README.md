@@ -54,3 +54,7 @@ $>sql USE my_schema; EXEC myprocedure <list of paramters if any>
 ```sh
 $>sql describe my_schema..mytable;
 ```
+
+
+# Dockerization
+_in progress_
