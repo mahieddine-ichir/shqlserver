@@ -29,7 +29,7 @@ public class Application {
 
 			LogFactory.getLog(Application.class).debug("Executing "+sql);
 			
-			if (sql.equals("exit")) {
+			if (sql.equals("exit") || sql.equals("quit")) {
 				scanner.close();
 				System.exit(0);
 			}
