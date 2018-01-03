@@ -23,7 +23,7 @@ public class Alias {
 	/**
 	 * A predicate to determine whether an input matches <code>this</code> alias.
 	 */
-	private final Predicate<String> e;
+	final Predicate<String> e;
 
 	/**
 	 * An extractor function to get execution context from input alias command.
@@ -47,7 +47,7 @@ public class Alias {
 	}
 	
 	boolean matches(String command) {
-		return e.test(command);
+		return e.test(command.toLowerCase().replaceAll(";", " ").trim().replaceAll("\\s+", " "));
 	}
 	
 	String parse(String command) {
