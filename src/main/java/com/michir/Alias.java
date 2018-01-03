@@ -29,15 +29,21 @@ public class Alias {
 	 * An extractor function to get execution context from input alias command.
 	 */
 	private final Function<String, String> map;
+
+	/**
+	 * Command description for #help().
+	 */
+	private final String description;
 	
 	private Alias(String alias, String description, Predicate<String> e, Function<String, String> map) {
 		this.alias = alias.toLowerCase().replaceAll(";", " ").trim().replaceAll("\\s+", "\\s");
 		this.e = e;
 		this.map = map;
+		this.description = description;
 	}
 	
 	String help() {
-		return alias + (alias.endsWith(";") ? "" : "[;]");
+		return alias + (alias.endsWith(";") ? "" : "[;]") + "\t:\t" + description;
 	}
 	
 	boolean matches(String command) {
