@@ -43,7 +43,7 @@ public class Alias {
 	}
 	
 	String help() {
-		return alias + (alias.endsWith(";") ? "" : "[;]") + "\t\t" + description;
+		return alias + (alias.endsWith(";") ? "" : "[;]") + " - " + description;
 	}
 	
 	boolean matches(String command) {

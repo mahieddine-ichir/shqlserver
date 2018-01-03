@@ -26,5 +26,10 @@ public class AliasTest {
 		Assert.assertTrue(show_databases.matches("show datAbases;"));
 		Assert.assertTrue(show_databases.matches(" show   databases ; "));
 	}
+	
+	@Test
+	public void describe_table() {
+		Assert.assertTrue(Alias.describe_table().matches("describe table my_schema.my_table"));
+	}
 
 }
