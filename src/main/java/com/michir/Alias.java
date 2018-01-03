@@ -36,14 +36,14 @@ public class Alias {
 	private final String description;
 	
 	private Alias(String alias, String description, Predicate<String> e, Function<String, String> map) {
-		this.alias = alias.toLowerCase().replaceAll(";", " ").trim().replaceAll("\\s+", "\\s");
+		this.alias = alias.toLowerCase().replaceAll(";", " ").trim().replaceAll("\\s+", " ");
 		this.e = e;
 		this.map = map;
 		this.description = description;
 	}
 	
 	String help() {
-		return alias + (alias.endsWith(";") ? "" : "[;]") + "\t:\t" + description;
+		return alias + (alias.endsWith(";") ? "" : "[;]") + "\t\t" + description;
 	}
 	
 	boolean matches(String command) {
@@ -84,6 +84,6 @@ public class Alias {
 	}
 	
 	static Stream<Alias> all() {
-		return Arrays.asList(describe_table(), show_databases(), show_databases()).stream();
+		return Arrays.asList(describe_table(), show_tables(), show_databases()).stream();
 	}
 }

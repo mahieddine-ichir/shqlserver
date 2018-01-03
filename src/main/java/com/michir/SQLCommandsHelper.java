@@ -7,7 +7,7 @@ public class SQLCommandsHelper {
 
 	public void run() {
 		System.out.println("================");
-		Alias.all().map(Alias::help).forEach(e -> System.out.println(e));
+		Alias.all().map(Alias::help).forEach(e -> System.out.println("\t"+e));
 		System.out.println("================");
 	}
 }
