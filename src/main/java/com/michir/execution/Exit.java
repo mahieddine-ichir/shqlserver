@@ -1,5 +1,6 @@
-package com.michir;
+package com.michir.execution;
 
+import com.michir.execution.Executor;
 import org.springframework.stereotype.Component;
 
 @Component

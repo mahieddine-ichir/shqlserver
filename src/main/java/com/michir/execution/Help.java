@@ -1,10 +1,11 @@
-package com.michir;
+package com.michir.execution;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.michir.execution.Executor;
 import org.springframework.stereotype.Component;
 
 @Component

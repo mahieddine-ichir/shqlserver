@@ -1,4 +1,4 @@
-package com.michir;
+package com.michir.execution;
 
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
+import com.michir.QueryEvent;
+import com.michir.QueryRunner;
+import com.michir.execution.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;

@@ -1,4 +1,4 @@
-package com.michir;
+package com.michir.execution;
 
 public interface Executor {
 	

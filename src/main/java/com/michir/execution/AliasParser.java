@@ -1,4 +1,4 @@
-package com.michir;
+package com.michir.execution;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
+import com.michir.QueryRunner;
+import com.michir.execution.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
