@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 
 import com.michir.QueryRunner;
-import com.michir.execution.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class AliasParser implements Executor {
 
 	@Autowired
-	QueryRunner commandRunner;
+	QueryRunner queryRunner;
 	
 	Map<String, String> map = new HashMap<>();
 	
@@ -50,7 +49,7 @@ public class AliasParser implements Executor {
 
 	@Override
 	public void run(String sql) throws Exception {
-		this.commandRunner.execute(parse(sql));
+		this.queryRunner.execute(parse(sql));
 	}
 	
 }
