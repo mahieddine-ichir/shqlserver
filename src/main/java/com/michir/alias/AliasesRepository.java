@@ -15,9 +15,8 @@ public class AliasesRepository {
   void init() {
     aliases.add(
       Alias.builder()
-        //.usage("use <schema>; exec sp_columns <table>")
-        .usage("describe schema..table")
-        .pattern("describe\\s+table\\s+(\\w+)\\.{2}(\\w+)\\s*;*")
+        .usage("describe table schema..table")
+        .pattern("describe\\s+table\\s+(\\w+)\\.{1,2}(\\w+)\\s*;*")
         .sql("use %s; exec sp_columns %s;")
         .description("Describe table <table> on schema <schema>")
         .build()
@@ -26,7 +25,7 @@ public class AliasesRepository {
     aliases.add(
       Alias.builder()
         .usage("show tables")
-        .pattern("show tables")
+        .pattern("show tables;*")
         .sql("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';")
         .description("List tables in schema")
         .build()

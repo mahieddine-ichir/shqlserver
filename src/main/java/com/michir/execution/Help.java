@@ -15,6 +15,7 @@ public class Help implements Executor {
 		System.out.println("================");
 		aliasesRepository.aliases()
 				.forEach(alias -> System.out.println(String.format("\t%s \t%s", alias.getUsage(), alias.getDescription())));
+		// TODO add use, exit, --file, history, help
 		System.out.println("================");
 	}
 
