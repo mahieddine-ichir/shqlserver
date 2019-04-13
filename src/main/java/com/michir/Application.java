@@ -2,6 +2,7 @@ package com.michir;
 
 import com.michir.execution.Executor;
 import com.michir.execution.Use;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -9,6 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.util.Map;
 import java.util.Scanner;
 
+@Slf4j
 @SpringBootApplication
 public class Application {
 
@@ -35,9 +37,10 @@ public class Application {
 			executors.entrySet()
 					.stream()
 					.map(Map.Entry::getValue)
-					.filter(executor -> executor.supported(sql))
+					.filter(executor -> executor.supported(sql.trim()))
 					.findAny()
 					.ifPresentOrElse(executor -> {
+						log.debug("Using '{}' for command '{}'", executor, sql);
 						try {
 							executor.run(sql);
 						} catch (Exception e1) {
