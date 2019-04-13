@@ -24,7 +24,7 @@ public class History implements Executor {
 	private Integer maxSize;
 	
 	@Autowired
-	QueryRunner commandRunner;
+	QueryRunner queryRunner;
 	
 	@PostConstruct
 	void init() {
@@ -37,7 +37,7 @@ public class History implements Executor {
 			Matcher matcher = pattern.matcher(cmd);
 			if (matcher.find()) {
 				String sql = history.get(Integer.parseInt(matcher.group(1)));
-				commandRunner.execute(sql);
+				queryRunner.execute(sql);
 			}
 			
 		} else {
