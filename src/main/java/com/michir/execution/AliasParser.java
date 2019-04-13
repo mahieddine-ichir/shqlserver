@@ -1,55 +1,55 @@
 package com.michir.execution;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.PostConstruct;
-
 import com.michir.QueryRunner;
+import com.michir.alias.AliasesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class AliasParser implements Executor {
 
 	@Autowired
 	QueryRunner queryRunner;
-	
-	Map<String, String> map = new HashMap<>();
-	
-	@PostConstruct
-	void init() {
-		map.put("describe\\s+table\\s+(\\w+)\\.{2}(\\w+)\\s*;*", "use %s; exec sp_columns %s;");
-	}
-	
-	boolean contains(String alias) {
-		return map.keySet().stream().filter(e -> alias.matches(e)).findAny().isPresent();
-	}
-	
-	String parse(String input) {
-		String key = map.keySet().stream().filter(e -> input.matches(e)).findFirst().get();
-		Pattern pattern = Pattern.compile(key);
-		Matcher matcher = pattern.matcher(input);
-		if (matcher.find()) {
-			Object[] s = new String[matcher.groupCount()];
-			for (int i=1; i<=matcher.groupCount();i++) {
-				s[i-1] = matcher.group(i);
-			}
-			return String.format(map.get(key), s);
-		}
-		return null;
-	}
-	
+
+	@Autowired
+	AliasesRepository aliasesRepository;
+
 	@Override
 	public Boolean supported(String command) {
-		return contains(command);
+		return aliasesRepository.aliases()
+				.stream()
+				.filter(alias -> command.matches(alias.getPattern()))
+				.findAny().isPresent();
 	}
 
 	@Override
-	public void run(String sql) throws Exception {
-		this.queryRunner.execute(parse(sql));
+	public void run(String command) throws Exception {
+		aliasesRepository.aliases()
+				.stream()
+				.filter(alias -> command.matches(alias.getPattern()))
+				.findFirst()
+				.ifPresent(alias -> {
+
+					String sql = alias.getSql();
+					Pattern pattern = Pattern.compile(alias.getPattern());
+					Matcher matcher = pattern.matcher(command);
+					if (matcher.find()) {
+						Object[] s = new String[matcher.groupCount()];
+						for (int i=1; i<=matcher.groupCount();i++) {
+							s[i-1] = matcher.group(i);
+						}
+						String.format(sql, s);
+					}
+
+					try {
+						queryRunner.execute(sql);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 	}
 	
 }
