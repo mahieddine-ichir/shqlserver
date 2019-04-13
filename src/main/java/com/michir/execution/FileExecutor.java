@@ -21,6 +21,6 @@ public class FileExecutor implements Executor {
   @Override
   public void run(String sql) throws Exception {
     String buffer = Files.readString(Paths.get(sql.substring("--file".length()).trim()));
-    queryRunner.execute(buffer);
+    queryRunner.execute(buffer, false);
   }
 }
