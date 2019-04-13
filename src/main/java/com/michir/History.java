@@ -1,15 +1,14 @@
 package com.michir;
 
-import java.util.LinkedList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class History implements Executor {
@@ -42,9 +41,7 @@ public class History implements Executor {
 			
 		} else {
 			System.out.println("(hint) type 'h:index' to (re)run corresponding query");
-			history.stream().forEach(e -> {
-				System.out.println("["+history.indexOf(e)+"] "+e);
-			});
+			history.forEach(h -> System.out.println("["+history.indexOf(h)+"] "+h));
 		}
 	}
 
