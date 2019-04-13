@@ -15,8 +15,8 @@ public class Help implements Executor {
 	
 	@PostConstruct
 	void init() {
-		map.put("use <schema>; exec sp_columns <table>;", "Describe table <table> on schema <schema>");
-		map.put("describe table <schema>..<table>", "alias of <exec sp_columns>");
+		map.put("[use <schema>;] exec sp_columns <table>;", "Describe table <table> on schema <schema>");
+		map.put("describe table [<schema>..]<table>", "alias of <exec sp_columns>");
 	}
 	
 	@Override

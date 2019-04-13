@@ -32,21 +32,24 @@ public class Application {
 				continue;
 			}
 
-			if (executors.values().stream().anyMatch(e -> e.supported(sql))) {
-				executors.values().stream().filter(e -> e.supported(sql)).forEach(e -> {
-					try {
-						e.run(sql);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				});
-			} else {
-				try {
-					runner.execute(sql);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
+			executors.entrySet()
+					.stream()
+					.map(Map.Entry::getValue)
+					.filter(executor -> executor.supported(sql))
+					.findAny()
+					.ifPresentOrElse(executor -> {
+						try {
+							executor.run(sql);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}, () -> {
+						try {
+							runner.execute(sql);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					});
 		}
 	}
 }
