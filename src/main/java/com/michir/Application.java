@@ -1,11 +1,11 @@
 package com.michir;
 
-import java.util.Map;
-import java.util.Scanner;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+
+import java.util.Map;
+import java.util.Scanner;
 
 @SpringBootApplication
 public class Application {
@@ -19,17 +19,10 @@ public class Application {
 		QueryRunner runner = context.getBean(QueryRunner.class);
 		Use use = context.getBean(Use.class);
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				if (scanner != null) {
-					scanner.close();
-				}
-			}
-		});
+		scanner = new Scanner(System.in);
+		Runtime.getRuntime().addShutdownHook(new Thread(scanner::close));
 
 		while (true) {
-			scanner = new Scanner(System.in);
 			use.next();
 
 			String sql = scanner.nextLine().trim();
